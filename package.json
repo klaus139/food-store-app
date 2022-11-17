@@ -1,0 +1,43 @@
+{
+  "name": "food",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./dist/app.js",
+    "dev": "nodemon ./dist/app.js",
+    "watch": "tsc -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/cookie-parser": "^1.4.3",
+    "@types/express": "^4.17.14",
+    "@types/http-errors": "^2.0.1",
+    "@types/morgan": "^1.9.3",
+    "@types/typescript": "^2.0.0",
+    "bcrypt": "^5.1.0",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "http-errors": "^2.0.0",
+    "joi": "^17.7.0",
+    "jsonwebtoken": "^8.5.1",
+    "logger": "^0.0.1",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.8.0",
+    "nodemon": "^2.0.20",
+    "sequelize": "^6.25.5",
+    "sqlite3": "^5.1.2",
+    "twilio": "^3.83.2",
+    "typescript": "^4.8.4",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/jsonwebtoken": "^8.5.9",
+    "@types/nodemailer": "^6.4.6",
+    "@types/uuid": "^8.3.4"
+  }
+}
