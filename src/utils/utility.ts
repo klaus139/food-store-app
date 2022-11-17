@@ -38,3 +38,13 @@ export const GenerateSignature = async(payload:AuthPayload)=> {
 export const verifySignature = async(signature:string) => {
     return jwt.verify(signature, APP_SECRET);
 }
+
+export const loginSchema = Joi.object().keys({
+    email: Joi.string().required(),
+    password: Joi.string().required().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
+});
+
+export const validatePassword = async(enteredPassword:string, savedPassword:string, salt:string) => {
+    return await GeneratePassword(enteredPassword, salt) === savedPassword;
+}
+    
