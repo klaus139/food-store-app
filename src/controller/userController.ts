@@ -12,6 +12,7 @@ import {
   verifySignature,
   loginSchema,
   validatePassword,
+  updateSchema,
 } from "../utils";
 import { v4 as uuid4 } from "uuid";
 import { UserAttributes, UserInstance } from "../model/userModel";
@@ -212,7 +213,8 @@ export const resendOTP = async (req: Request, res: Response) => {
             }, { where: { email: decode.email } }) as unknown as UserAttributes;
 
             if(updatedUser){
-                await onRequestOtp(otp, updatedUser.phone);
+                const User = (await UserInstance.findOne({ where: { email: decode.email } })) as unknown as UserAttributes;
+                await onRequestOtp(otp, User.phone);
             }
             //send mail
             const html = emailHtml(otp);
@@ -233,3 +235,94 @@ export const resendOTP = async (req: Request, res: Response) => {
         });
     }
 }
+
+/**========================== User Profile =================**/
+
+export const getAllUsers = async(req: Request, res: Response)=> {
+  try {
+    const limit = req.query.limit as number | undefined
+    const users = await UserInstance.findAndCountAll({limit: limit})
+    return res.status(200).json({
+      message: "successfully retrieved all users", 
+      Count:users.count,
+      Users:users.rows
+    });
+     
+
+  } catch (err) {
+    return res.status(500).json({
+      Error: "Internal Server Error",
+      route: "/users/get-all-users"
+    });
+  }
+
+    
+}
+
+export const getSingleUser = async(req:Request, res:Response)=> {
+  try{
+    const id = req.params.id
+   //fnd the user by id
+    const User = (await UserInstance.findOne({
+      where:{ id: id },
+    })) as unknown as UserAttributes;
+
+    if(User){
+      return res.status(200).json({
+        message: "successfully retrieved single user", 
+        User
+      })
+
+    }
+  } catch (err) {
+    return res.status(500).json({
+      Error: "Internal Server Error",
+      route: "/users/get-single-user"
+    })
+  }
+
+};
+
+export const updateUserProfile =async(req: JwtPayload, res: Response)=>{
+  try{
+      const id=req.user.id;
+      const {firstname, lastname, address, phone } = req.body;
+      //Joi validation
+      const validateResult = updateSchema.validate(req.body, options)
+      if(validateResult.error){
+        return res.status(400).json({
+          Error: validateResult.error.details[0].message
+        });
+      }
+      //check if the user is a registered user
+      const User = (await UserInstance.findOne({ where: { id: id } })) as unknown as UserAttributes;
+      if(!User){
+        return res.status(400).json({
+          Error: "you are not authorized to update your profile"
+        });
+      }
+      const updatedUser = (await UserInstance.update({
+        firstname,
+        lastname,
+        address,
+        phone
+        }, { where: { id: id } }
+        )) as unknown as UserAttributes;
+
+        if(updatedUser){
+
+          const User = (await UserInstance.findOne({ where: { id: id } })) as unknown as UserAttributes
+          return res.status(200).json({
+            message: "successfully updated user profile",
+            User,
+          })
+        }
+        
+  } catch(err){
+    return res.status(500).json({
+      Error: "Internal Server Error",
+      route: "/users/update-profile"
+    });
+  }
+}
+

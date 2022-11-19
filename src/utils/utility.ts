@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { AuthPayload } from '../interface';
 import jwt from 'jsonwebtoken';
 import { APP_SECRET } from '../config';
+import { LastMonthInstance } from 'twilio/lib/rest/api/v2010/account/usage/record/lastMonth';
 
 
 export const registerSchema = Joi.object().keys({
@@ -12,6 +13,16 @@ export const registerSchema = Joi.object().keys({
     confirm_password: Joi.any().equal(Joi.ref('password')).required().label('confirm password').messages({'any.only': '{{#label}} does not match'})
     
 });
+
+export const updateSchema = Joi.object().keys({
+    firstname: Joi.string().required(),
+    lastname: Joi.string().required(),
+    address: Joi.string().required(),
+    phone: Joi.string().required()
+
+
+
+})
 
 
 export const options = {
